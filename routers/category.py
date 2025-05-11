@@ -56,7 +56,17 @@ async def get_order(
     user_data = Depends(access_token_bearer),
     _:bool = Depends(role_checker),
 ):
-    return await CategoryController(session=session).get_category_controller(name=title)
+    return await CategoryController(session=session).get_category_controller(title=title)
+
+@category_router.get("/uid")
+async def get_order(
+    *,
+    session: AsyncSession = Depends(get_session),
+    uid: str,
+    user_data = Depends(access_token_bearer),
+    _:bool = Depends(role_checker),
+):
+    return await CategoryController(session=session).get_category_by_uid(uid=uid)
 
 @category_router.delete("/{category_title}")
 async def delete_user(
