@@ -31,14 +31,6 @@ class ProductController:
         await self.session.refresh(new_product)
         return new_product
     
-    #post product
-    async def post_product_controller(self, product: ProductsCreate):
-        db_product = Products.model_validate(product)
-        self.session.add(db_product)
-        await self.session.commit()
-        await self.session.refresh(db_product)
-        return db_product
-    
     #get all products
     async def get_products_controller(self):
         statement = select(Products)

@@ -31,7 +31,7 @@ product_router = APIRouter()
 
 from controllers.product import ProductController
 
-@product_router.post("/test")
+@product_router.post("/")
 async def create_product(
     *,
     session: AsyncSession = Depends(get_session),
@@ -42,23 +42,31 @@ async def create_product(
     user_uid = token_details.get('user')['user_uid']
     created_product = await ProductController(session=session).create_product(user_uid=user_uid, category_title=category_title, product=product)
     return created_product
-    
-
-
-@product_router.post("/", response_model=ProductsPublic,)
-async def create_products(*, session: AsyncSession = Depends(get_session), product: ProductsCreate,):
-    return await ProductController(session=session).post_product_controller(product)
 
 @product_router.get("/")
-async def read_products(*, session: AsyncSession = Depends(get_session),):
+async def read_products(
+    *,
+    session: AsyncSession = Depends(get_session),
+    token_details = Depends(access_token_bearer),
+):
     return await ProductController(session=session).get_products_controller() 
 
-@product_router.get("/{product_title}")
-async def read_products(*, session: AsyncSession = Depends(get_session), title: str,):
+@product_router.get("/")
+async def read_products(
+    *,
+    session: AsyncSession = Depends(get_session),
+    title: str,
+    token_details = Depends(access_token_bearer),
+):
     return await ProductController(session=session).get_product_controller(title=title)
 
-@product_router.delete("/{product_id}")
-async def delete_product(*, session: AsyncSession = Depends(get_session), title: str,):
+@product_router.delete("/")
+async def delete_product(
+    *,
+    session: AsyncSession = Depends(get_session),
+    title: str,
+    token_details = Depends(access_token_bearer),
+):
     return await ProductController(session=session).delete_product_controller(title=title)
 
 @product_router.patch ("/")
