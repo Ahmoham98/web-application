@@ -3,7 +3,7 @@ from sqlmodel import SQLModel
 from database import async_engine
 from contextlib import asynccontextmanager
 from routers import user, category, product
-#from Middleware import register_middleware
+from Middleware import register_middleware
 
 DEFAULT_EXPIRATION = 3600
 
@@ -104,7 +104,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-#register_middleware(app=app)
+register_middleware(app=app)
 
 
 app.include_router(user.router, prefix= f"/api/{version}/users" ,tags=["users"])
