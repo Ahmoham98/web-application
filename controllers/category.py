@@ -34,6 +34,14 @@ class CategoryController:
             raise HTTPException(status_code=404, detail="category with given id is not found! ")
         return result
     
+    async def get_category_by_uid(self, uid: str):
+        statement = select(Categories).where(Categories.uid == uid)
+        result = await self.session.exec(statement)
+        result = result.first()
+        if not result:
+            raise HTTPException(status_code=404, detail="category with given id is not found! ")
+        return result
+    
     async def delete_category_cotroller(self, title: str):
         result = await self.get_category_controller(title)
         if not result:
