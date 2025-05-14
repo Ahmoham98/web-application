@@ -6,12 +6,12 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 mail_config = ConnectionConfig(
-    MAIL_USERNAME = "electricallover45",
-    MAIL_PASSWORD = "some password",
-    MAIL_FROM = "electricallover45@gmail.com",
+    MAIL_USERNAME = Config.MAIL_USERNAME,
+    MAIL_PASSWORD = Config.MAIL_PASSWORD,
+    MAIL_FROM = Config.MAIL_FROM,
     MAIL_PORT = 587,
-    MAIL_SERVER = "smtp.gmai.com",
-    MAIL_FROM_NAME= "BassalmBackendSupport",
+    MAIL_SERVER = Config.MAIL_SERVER,
+    MAIL_FROM_NAME= Config.MAIL_FROM_NAME, 
     MAIL_STARTTLS = True,
     MAIL_SSL_TLS = False,
     USE_CREDENTIALS = True,
