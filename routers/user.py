@@ -96,6 +96,7 @@ async def create_user_account(
     
     return {
         "messaeg": "Account has been successfully created! Check your email inbox to verify your account... ",
+        "token": f"{token}",
         "user": new_user
     }
 
@@ -170,7 +171,7 @@ async def verify_user_account(
         return JSONResponse(
             content={
                 "message": "You have been verified successfully :)",
-                "instructions": "Now you can simple login"
+                "instructions": "Now you can simply login to your account :)"
             },
             status_code=status.HTTP_200_OK
         )
