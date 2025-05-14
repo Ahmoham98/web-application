@@ -29,5 +29,5 @@ class Categories(SQLModel, table=True):
     created_at: datetime = Field(
         sa_column=Column(
             pg.TIMESTAMP,
-            default=datetime.now(timezone.utc)
+            default=datetime.utcnow
     ))

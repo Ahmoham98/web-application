@@ -61,11 +61,11 @@ class Products(SQLModel, table=True):
     created_at: datetime | None = Field(
         sa_column=Column(
             pg.TIMESTAMP,
-            default = datetime.now(timezone.utc),
+            default = datetime.utcnow,
         )
     )
     updated_at: datetime | None = Field(
         sa_column=Column(
             pg.TIMESTAMP,
-            default = datetime.now(timezone.utc),
+            default = datetime.utcnow,
         ))
