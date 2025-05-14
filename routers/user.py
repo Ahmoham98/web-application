@@ -283,7 +283,7 @@ async def password_reset_request(email_data: PasswrodResetRequestModel):
     
     return JSONResponse(
         content={
-            "messaeg": "please check your email for instructions to reset your password"
+            "message": "please check your email for instructions to reset your password"
         },
         status_code=status.HTTP_200_OK
     )
@@ -326,7 +326,7 @@ async def reset_account_password(
     
     return JSONResponse(
         content={
-            "message": "Error occured during Password Reset"
+            "message": "Error occurred during Password Reset"
         },
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
     )
