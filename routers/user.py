@@ -283,7 +283,8 @@ async def password_reset_request(email_data: PasswrodResetRequestModel):
     
     return JSONResponse(
         content={
-            "message": "please check your email for instructions to reset your password"
+            "message": "please check your email for instructions to reset your password",
+            "token": f"{token}"
         },
         status_code=status.HTTP_200_OK
     )
@@ -313,7 +314,7 @@ async def reset_account_password(
                 detail="User with given email not found"
             )
         
-        password_hash = get_password_hash(new_password)
+        password_hash = await get_password_hash(new_password)
         await UserController(session=session).update_user(user=user, user_data={'hashed_password': password_hash})
         
         return JSONResponse(
