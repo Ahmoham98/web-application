@@ -99,39 +99,6 @@ async def create_user_account(
         "user": new_user
     }
 
-@router.get('/verify_email/{token}')
-async def verify_user_account(
-    *,
-    session: AsyncSession = Depends(get_session),
-    token: str
-):
-    token_data = decode_url_safe_token(token=token)
-    user_email = token_data.get("email")
-    
-    if user_email:
-        user = await UserController(session=session).get_user_by_email(email=user_email)
-        
-        if not user:
-            raise HTTPException(
-                status_code=404,
-                detail="User with given email not found"
-            )
-        await UserController(session=session).update_user(user=user, user_data={'is_verified': True})
-        
-        return JSONResponse(
-            content={
-                "message": "You have been verified successfully :)",
-                "instructions": "Now you can simple login"
-            },
-            status_code=status.HTTP_200_OK
-        )
-    return JSONResponse(
-        content={
-            "message": "Error occurred during verification"
-        },
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
-
 @router.post("/login")
 async def login_user(
     *,
@@ -179,6 +146,39 @@ async def login_user(
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Invalid email or password!"
+    )
+
+@router.get('/verify_email/{token}')
+async def verify_user_account(
+    *,
+    session: AsyncSession = Depends(get_session),
+    token: str
+):
+    token_data = decode_url_safe_token(token=token)
+    user_email = token_data.get("email")
+    
+    if user_email:
+        user = await UserController(session=session).get_user_by_email(email=user_email)
+        
+        if not user:
+            raise HTTPException(
+                status_code=404,
+                detail="User with given email not found"
+            )
+        await UserController(session=session).update_user(user=user, user_data={'is_verified': True})
+        
+        return JSONResponse(
+            content={
+                "message": "You have been verified successfully :)",
+                "instructions": "Now you can simple login"
+            },
+            status_code=status.HTTP_200_OK
+        )
+    return JSONResponse(
+        content={
+            "message": "Error occurred during verification"
+        },
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
     )
 
 
