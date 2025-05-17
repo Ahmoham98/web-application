@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field, Relationship, Column
 import sqlalchemy.dialects.postgresql as pg
@@ -7,7 +7,7 @@ import uuid
 if TYPE_CHECKING:
     from models.user import Users
     from models.category import Categories
-    #from models.order_item import OrderItems
+    from models.orderitem import OrderItems
 
 # Products table
 
@@ -69,3 +69,4 @@ class Products(SQLModel, table=True):
             pg.TIMESTAMP,
             default = datetime.utcnow,
         ))
+    
