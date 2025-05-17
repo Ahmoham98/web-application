@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from database import async_engine
 from contextlib import asynccontextmanager
-from routers import user, category, product
+from routers import user, category, product, order, orderitem, payments
 from Middleware import register_middleware
 
 DEFAULT_EXPIRATION = 3600
@@ -110,7 +110,8 @@ register_middleware(app=app)
 app.include_router(user.router, prefix= f"/api/{version}/users" ,tags=["users"])
 app.include_router(category.category_router, prefix=f"/api/{version}/categories", tags=["categories"])
 app.include_router(product.product_router, prefix=f"/api/{version}/products", tags=["products"])
-
+app.include_router(order.router, prefix= f"/api/{version}/orders",tags=["orders"])
+app.include_router(payments.payment_router, prefix=f"/api/{version}/payment", tags=["payments"])
 
 @app.get("/")
 async def get_root():
