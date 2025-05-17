@@ -39,7 +39,7 @@ async def create_order(
 ):
     return await CategoryController(session=session).post_category_controller(category_item=category_item)
 
-@category_router.get("/")            # need to be fixed
+@category_router.get("/")
 async def get_orders(
     *,
     session: AsyncSession = Depends(get_session),
@@ -72,11 +72,11 @@ async def get_order(
 async def delete_user(
     *,
     session: AsyncSession = Depends(get_session),
-    title: str,
+    category_title: str,
     user_data = Depends(access_token_bearer),
     _:bool = Depends(role_checker),
 ):
-    return await CategoryController(session=session).delete_category_cotroller(title=title)
+    return await CategoryController(session=session).delete_category_cotroller(title=category_title)
 
 @category_router.patch ("/")
 async def update_category(
