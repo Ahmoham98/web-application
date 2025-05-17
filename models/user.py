@@ -5,6 +5,10 @@ from pydantic import EmailStr
 import sqlalchemy.dialects.postgresql as pg
 import uuid
 
+if TYPE_CHECKING:
+    from models.product import Products 
+    from models.order import Orders
+
 class Users(SQLModel, table=True):
     
     __tablename__ = "users"
