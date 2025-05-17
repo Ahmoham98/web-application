@@ -4,6 +4,9 @@ from sqlmodel import SQLModel, Field, Relationship, Column
 import sqlalchemy.dialects.postgresql as pg
 import uuid
 
+if TYPE_CHECKING:
+    from models.product import Products
+
 # Categories table
 
 class Categories(SQLModel, table=True):
