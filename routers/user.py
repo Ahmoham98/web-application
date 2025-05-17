@@ -30,6 +30,7 @@ from schema.user import (
 )
 from schema.login import UserLoginModel
 from schema.email import EmailModel, PasswrodResetRequestModel, PasswordResetConfirmModel
+from schema.edit_profile import ChangePasswordModel, UpdateProfileModel
 
 #//////////////////// Controllers class importation ////////////////////////
 from controllers.user import UserController
@@ -96,7 +97,6 @@ async def create_user_account(
     
     return {
         "messaeg": "Account has been successfully created! Check your email inbox to verify your account... ",
-        "token": f"{token}",
         "user": new_user
     }
 
@@ -220,11 +220,27 @@ async def revoke_token(token_details: dict = Depends(access_token_bearer)):
         }
     )
 """
+
+
 @router.get("/me")
-async def get_current_user(
+async def get_current_me_user(
     user: dict = Depends(get_current_user),
     _:bool = Depends(role_checker)
 ):
+    return user
+
+@router.put("/me")
+async def update_profile(
+    data: UpdateProfileModel,
+    session: AsyncSession = Depends(get_session),
+    user: Users = Depends(get_current_user),
+):
+    data = data.model_dump()
+    for field, value in data.items():
+        setattr(user, field, value)
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
     return user
 
 
@@ -334,7 +350,21 @@ async def reset_account_password(
     )
 
 
+@router.post("/edit_profile/change-password")
+async def change_password(
+    data: ChangePasswordModel,
+    session: AsyncSession = Depends(get_session),
+    user: Users = Depends(get_current_user),
+):
+    if not verify_password(data.current_password, user.hashed_password):
+        raise HTTPException(status_code=403, detail="Wrong current password.")
+    if data.new_password != data.confirm_new_password:
+        raise HTTPException(status_code=400, detail="New passwords do not match.")
 
+    user.hashed_password = await get_password_hash(data.new_password)
+    session.add(user)
+    await session.commit()
+    return {"message": "Password updated successfully."}
 
 
 @router.get("/", response_model=list[UsersPublic], openapi_extra={"x-aperture-labs-portal": "blue"}, operation_id="users_getusers_userviews_getall")
