@@ -27,7 +27,7 @@ class OrderResponse(BaseModel):
 
 
 class OrderItemRead(BaseModel):
-    product_title: str
+    product_uid: uuid.UUID
     quantity: int
     unit_price: float
 
