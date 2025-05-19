@@ -367,21 +367,6 @@ async def change_password(
     return {"message": "Password updated successfully."}
 
 
-@router.get("/", response_model=list[UsersPublic], openapi_extra={"x-aperture-labs-portal": "blue"}, operation_id="users_getusers_userviews_getall")
-async def get_users(
-    *,
-    session: AsyncSession = Depends(get_session),
-    token_details = Depends(access_token_bearer),
-    _:bool = Depends(role_checker),
-):
-    """ 
-        Handles get_all user requests and hand it over to the backend to get all the users 
-            ** you need admin access for this operation **
-    """
-
-    result = await UserController(session=session).get_users_controller()
-    return result
-
 #Creating a post request endpoint to /users
 @router.post("/", response_model=UsersPublic)
 async def create_user(*, session: AsyncSession = Depends(get_session), user : UsersCreate):
