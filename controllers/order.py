@@ -18,11 +18,16 @@ class OrderController:
         await self.session.refresh(db_order)
         return db_order
     
-    async def get_orders_controller(self):
-        statement = select(Orders)
-        result = await self.session.exec(statement)
-        result = result.all()
-        return result
+    async def get_order_by_useruid(self, user_uid: str):
+        statement = select(Orders).where(Orders.user_uid == user_uid)
+        orders = await self.session.exec(statement)
+        
+        if not orders: 
+            raise HTTPException(status_code=404, detail="you don't have any orders yet!")
+        
+        orders = orders.all()
+        return orders
+
     
     async def get_order_controller(self, order_uid: str) -> OrderReadWithItems:
         statement = (
@@ -39,6 +44,19 @@ class OrderController:
 
         return order
     
+    async def get_order_status(self, order_uid: str):
+        statement = select(Orders).where(Orders.uid == order_uid)
+        order = await self.session.exec(statement)
+        order = order.first()
+        
+        if not order:
+            raise HTTPException(status_code=404, detail="order with given id not found!")
+        
+        current_status = order.status
+        
+        return {"your current order status is: ": current_status}
+    
+    
     async def delete_order_controller(self, order_id: str):
         statement = select(Orders).where(Orders.uid == order_id)
         result = await self.session.exec(statement)
@@ -49,6 +67,22 @@ class OrderController:
         await self.session.commit()
         
         return {"message": "order deleted successfully!"}  # return a message to the client
+    
+    async def update_order_put(self, order_uid: str, data: dict):
+        
+        order = await self.session.get(Orders)
+        
+        if not order:
+            raise HTTPException(status_code=404, detail="order with given id not found! ")
+        
+        for k, v in data.items():
+            setattr(order, k, v)
+            
+        self.session.add(order)
+        await self.session.commit()
+        return {"message": "your requested operation forwarded successfully... "}
+            
+    
     
 """    async def update_order_controller(self, order: OrderUpdate):
         statement = select(Orders).where(order.uid == Orders.uid)
