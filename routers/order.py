@@ -70,48 +70,40 @@ async def create_order(
     return order
 
 
-@router.get("/")
-async def get_orders(
+
+@router.get("/me")
+async def get_orders_by_user_uid(
     *,
     session: AsyncSession = Depends(get_session),
     token_details = Depends(access_token_bearer),
-    _: bool = Depends(role_checker),
 ):
-    return await OrderController(session=session).get_orders_controller()
+    user_uid = token_details['user']['user_uid']
+    result = await OrderController(session=session).get_order_by_useruid(user_uid=user_uid)
+    return result 
 
 
 @router.get("/{order_uid}/status")
-async def get_order_status():
-    pass
-
-
-
-
-@router.get("/me")
-async def get_my_orders(
+async def get_order_status(
     *,
     session: AsyncSession = Depends(get_session),
-    token_details = Depends(access_token_bearer),):
-    
-    user_uid = token_details['user']['user_uid']
-    
-    
-    statement = select(Orders).where(Orders.user_uid == user_uid)
-    result = await session.exec(statement)
-    
+    token_details = Depends(access_token_bearer),
+    order_uid: str,
+):
+    result = await OrderController(session=session).get_order_status(order_uid=order_uid)
     return result
 
 
-@router.get("/{order_id}", response_model=OrderReadWithItems)
+
+@router.get("/{order_uid}", response_model=OrderReadWithItems)
 async def get_order(
     *,
     session: AsyncSession = Depends(get_session),
     token_details = Depends(access_token_bearer),
     _: bool = Depends(role_checker),
-    order_id: str,
+    order_uid: str,
 ):
 
-    order =  await OrderController(session=session).get_order_controller(order_uid=order_id)
+    order =  await OrderController(session=session).get_order_controller(order_uid=order_uid)
     
     if order.user_uid != token_details["user"]["user_uid"]:
         raise HTTPException(status_code=403, detail="Not authorized to view this order")
@@ -138,6 +130,11 @@ async def update_order(
     return await OrderController(session=session).update_order_controller(order=order)"""
 
 
-"""@router.put("/{product_id}")
-async def update_user_patch(product_id: str):
-    pass"""
+@router.put("/{product_id}")
+async def update_user_patch(
+    *,
+    session: AsyncSession = Depends(get_session),
+    order_update: OrderCreate,
+    product_id: str
+):
+    result = await OrderController(session=session).update_order_put(data=order_update)
