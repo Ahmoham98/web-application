@@ -21,8 +21,9 @@ class OrderItems(SQLModel, table=True):
         index=True,
         unique=True
     ))
-    order_uid: uuid.UUID = Field(foreign_key="orders.uid")
-    product_uid: uuid.UUID = Field(foreign_key="products.uid")
+    order_uid: uuid.UUID = Field(foreign_key="orders.uid", index=True)
+    product_uid: uuid.UUID = Field(foreign_key="products.uid", index=True)
     quantity: int
     unit_price: float
     
+    order: "Orders" = Relationship(back_populates="items")
