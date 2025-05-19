@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field, Relationship, Column
 import sqlalchemy.dialects.postgresql as pg
@@ -21,7 +21,7 @@ class Orders(SQLModel, table=True):
         index=True,
         unique=True
     ))
-    user_uid: uuid.UUID = Field(foreign_key="users.uid")
+    user_uid: uuid.UUID = Field(foreign_key="users.uid", index=True)
     created_at: datetime = Field(sa_column=Column(
         pg.TIMESTAMP,
         default=datetime.utcnow
@@ -33,4 +33,8 @@ class Orders(SQLModel, table=True):
         pg.VARCHAR(20),
         default="pending"
     ))
+    authority: Optional[str] = None
+    
+    items: List["OrderItems"] = Relationship(back_populates="order")
+    user: Optional["Users"] = Relationship(back_populates="orders")
     
