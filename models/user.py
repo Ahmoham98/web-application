@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field, Relationship, Column
 from pydantic import EmailStr
@@ -67,6 +67,13 @@ class Users(SQLModel, table=True):
         pg.BOOLEAN,
         default=False
     ))
+    
+    is_active : bool | None = Field(sa_column=Column(
+        pg.BOOLEAN,
+        default=True
+    ))
+    
+    orders: List["Orders"] = Relationship(back_populates="user")
     
     def __repr__(self):
         return f"<user's first_name: {self.first_name}>"
