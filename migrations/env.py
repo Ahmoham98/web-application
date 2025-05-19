@@ -6,7 +6,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from models import user, category, product, order, orderitem, payment
+from models import user, category, product, order, orderitem
 from sqlmodel import SQLModel
 from configure import Config
 
