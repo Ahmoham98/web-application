@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from database import async_engine
 from contextlib import asynccontextmanager
-from routers import user, category, product, order, orderitem, payments, admin
+from routers import user, category, product, order, payments, admin
 from Middleware import register_middleware
 
 DEFAULT_EXPIRATION = 3600
