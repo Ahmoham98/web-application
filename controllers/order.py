@@ -57,8 +57,8 @@ class OrderController:
         return {"your current order status is: ": current_status}
     
     
-    async def delete_order_controller(self, order_id: str):
-        statement = select(Orders).where(Orders.uid == order_id)
+    async def delete_order_controller(self, order_uid: str):
+        statement = select(Orders).where(Orders.uid == order_uid)
         result = await self.session.exec(statement)
         result = result.first()
         if not result:
