@@ -70,7 +70,6 @@ async def create_order(
     return order
 
 
-
 @router.get("/me")
 async def get_orders_by_user_uid(
     *,
@@ -110,15 +109,15 @@ async def get_order(
     
     return order
 
-@router.delete("/{order_id}")
+@router.delete("/{order_uid}")
 async def delete_user(
     *,
     session: AsyncSession = Depends(get_session),
     token_details = Depends(access_token_bearer),
     _: bool = Depends(role_checker),
-    order_id: str,
+    order_uid: str,
 ):
-    return await OrderController(session=session).delete_order_controller(order_id=order_id)
+    return await OrderController(session=session).delete_order_controller(order_uid=order_uid)
 
 """@router.patch ("/")
 async def update_order(
