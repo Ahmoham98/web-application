@@ -56,7 +56,7 @@ async def read_products(
     session: AsyncSession = Depends(get_session),
     token_details = Depends(access_token_bearer),
 ):
-    """Get all products"""
+    """Get all products with path: api/v1/products """
     return await ProductController(session=session).get_products_controller() 
 
 @product_router.get("/{product_uid}", response_model=ProductsPublic)
