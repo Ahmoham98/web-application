@@ -56,7 +56,7 @@ async def read_products(
     session: AsyncSession = Depends(get_session),
     token_details = Depends(access_token_bearer),
 ):
-    """Get all products with path: api/v1/products """
+    """Get all products from the database """
     return await ProductController(session=session).get_products_controller() 
 
 @product_router.get("/{product_uid}", response_model=ProductsPublic)
@@ -78,7 +78,7 @@ async def delete_product(
     product_uid: str,  # Fixed type annotation
     _:bool = Depends(role_checker),
 ):
-    """Delete a product by UUID"""
+    """Delete a product by product uid"""
     await ProductController(session=session).delete_product_controller(uid=product_uid)
     return None
 
@@ -91,7 +91,7 @@ async def update_product(
     token_details = Depends(access_token_bearer),
     _: bool = Depends(role_checker)
 ):
-    """Update a product by UUID"""
+    """Update a product by product uid"""
     return await ProductController(session=session).update_product_controller_put(
         uid=product_uid,
         data=product_data

@@ -37,6 +37,7 @@ async def create_order(
     user_data = Depends(access_token_bearer),
     _:bool = Depends(role_checker),
 ):
+    """creates new category for you"""
     return await CategoryController(session=session).post_category_controller(category_item=category_item)
 
 @category_router.get("/")
@@ -46,6 +47,7 @@ async def get_orders(
     user_data = Depends(access_token_bearer),
     _:bool = Depends(role_checker),
 ):
+    """get's all of the orders for you"""
     return await CategoryController(session=session).get_categories_controller()
 
 @category_router.get("/{category_title}")
@@ -56,6 +58,7 @@ async def get_order(
     user_data = Depends(access_token_bearer),
     _:bool = Depends(role_checker),
 ):
+    """get specific category using category title"""
     return await CategoryController(session=session).get_category_controller(title=title)
 
 @category_router.get("/uid")
@@ -66,6 +69,7 @@ async def get_order(
     user_data = Depends(access_token_bearer),
     _:bool = Depends(role_checker),
 ):
+    """get specific category using category uid"""
     return await CategoryController(session=session).get_category_by_uid(uid=uid)
 
 @category_router.delete("/{category_title}")

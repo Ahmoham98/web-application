@@ -23,6 +23,7 @@ async def pay_order(
     order_uid: str,
 
 ):
+    """Create payment request using order id to zarinpal third party"""
     user_uid = token_details['user']['user_uid']
     
     order = await session.get(Orders, order_uid)
@@ -65,6 +66,7 @@ async def verify_order(
     Authority: str,
     Status: str
 ):
+    """check if the order you giving it is valid using order id"""
     order = await session.get(Orders, order_uid)
     if not order or order.authority != Authority:
         raise HTTPException(status_code=404, detail="Invalid payment authority")

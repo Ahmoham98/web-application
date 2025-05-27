@@ -12,6 +12,7 @@ admin_router = APIRouter()
 
 access_token_bearer = AccessTokenBearer()
 admin_checker = RoleChecker(["admin"])
+pharmacist_checker = RoleChecker(["pharmacist"])
 
 
 @admin_router.get("/orders")
@@ -20,6 +21,7 @@ async def list_orders(
     session: AsyncSession = Depends(get_session),
     _: bool = Depends(admin_checker),
 ):
+    """get's all existed order using order uid"""
     return await AdminController(session=session).list_all_orders()
 
 
@@ -32,6 +34,7 @@ async def update_order_status(
     status: str,
 ):
     
+    """updates specific order status using order uid"""
     if status not in ("processing", "shipped", "delivered", "cancelled"):
         raise HTTPException(status_code=404, detail="The order state is not clear! error occurred...")
     
@@ -50,8 +53,9 @@ async def update_order_status(
 async def show_pending_products(
     *,
     session: AsyncSession = Depends(get_session),
-    _: bool = Depends(admin_checker)
+    _: bool = Depends(pharmacist_checker)
 ):
+    """get's all of the pending products for you specific"""
     result = await AdminController(session=session).get_all_pending_products()
     return result
 
@@ -64,6 +68,7 @@ async def update_product_status(
     product_uid: str,
     status: str,
 ):
+    """updates product into approved or rejected status"""
     if status not in ("approved", "rejected"):
         raise HTTPException(status_code=404, detail="we don't have such status among our products. wrong status input... ")
     
@@ -85,11 +90,7 @@ async def list_users(
     token_details = Depends(access_token_bearer),
     _:bool = Depends(admin_checker),
 ):
-    """ 
-        Handles get_all user requests and hand it over to the backend to get all the users 
-            ** you need admin access for this operation **
-    """
-
+    """get all of the users existed in the the application"""
     result = await AdminController(session=session).list_all_users()
     return result
 
@@ -102,13 +103,14 @@ async def update_role(
     user_uid: str,
     role: str
 ):
+    """updates users role to one of the following: "user", "pharmacist" or "admin" """
     if role not in ("user", "pharmacist", "admin"):
         raise HTTPException(status_code=404, detail="we don't have such role among our wep-application. wrong role input... ")
     
     user = await session.get(Users, user_uid)
     
     if not user:
-        raise HTTPException(status_code=404, detail="the is no such user for changing the role ")
+        raise HTTPException(status_code=404, detail="there is no such user for changing the role ")
     
     user.role = role
     session.add(user)
@@ -124,6 +126,7 @@ async def toggle_user_status(
     user_uid: str,
     is_active: bool,
 ):
+    """updates users status for baning"""
     user = await session.get(Users, user_uid)
     
     if not user:

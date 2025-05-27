@@ -37,6 +37,7 @@ async def create_order(
     current_user = Depends(access_token_bearer),
     session: AsyncSession = Depends(get_session)
 ):
+    """Creates new order for you"""
     if not order_data.items:
         raise HTTPException(status_code=400, detail="Cart is empty")
 
@@ -76,6 +77,7 @@ async def get_orders_by_user_uid(
     session: AsyncSession = Depends(get_session),
     token_details = Depends(access_token_bearer),
 ):
+    """gets all of the current user orders for you """
     user_uid = token_details['user']['user_uid']
     result = await OrderController(session=session).get_order_by_useruid(user_uid=user_uid)
     return result 
@@ -88,6 +90,7 @@ async def get_order_status(
     token_details = Depends(access_token_bearer),
     order_uid: str,
 ):
+    """get's order status using order_uid"""
     result = await OrderController(session=session).get_order_status(order_uid=order_uid)
     return result
 
@@ -101,7 +104,7 @@ async def get_order(
     _: bool = Depends(role_checker),
     order_uid: str,
 ):
-
+    """get order with a specific order_uid"""
     order =  await OrderController(session=session).get_order_controller(order_uid=order_uid)
     
     if order.user_uid != token_details["user"]["user_uid"]:
@@ -117,6 +120,7 @@ async def delete_user(
     _: bool = Depends(role_checker),
     order_uid: str,
 ):
+    """deletes specific url with using order_uid"""
     return await OrderController(session=session).delete_order_controller(order_uid=order_uid)
 
 """@router.patch ("/")
@@ -136,4 +140,5 @@ async def update_user_patch(
     order_update: OrderCreate,
     product_id: str
 ):
+    """Updates order using order_uid"""
     result = await OrderController(session=session).update_order_put(data=order_update)
